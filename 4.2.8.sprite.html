@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+</head>
+<body>  
+<!--馬力動作序列幅-->
+<img src="images/mr.png" id="mr" style="display:none" /><br>    
+</body>
+<script src="js/jquery.js"></script>
+<!--導入引擎js部分-->
+<script charset='utf-8' src="xengine/xcore.js"></script>
+<script charset='utf-8' src="xengine/xutil.js"></script>
+<script charset='utf-8' src="xengine/xevent.js"></script>
+<script charset='utf-8' src="xengine/xsys.js"></script>
+<script charset='utf-8' src="xengine/xrenderobj.js"></script>
+<script charset='utf-8' src="xengine/xscene.js"></script>
+<script charset='utf-8' src="xengine/xscenemanager.js"></script>
+<script charset='utf-8' src="xengine/xframes.js"></script>
+<script charset='utf-8' src="xengine/xsprite.js"></script>
+<script charset='utf-8' src="xengine/xapp.js"></script>
+<!--導入遊戲js部分-->
+<script charset='utf-8' src="js/mario.js"></script>
+<script>  
+   var g = new Game();
+   //初始化遊戲
+   function initGame()
+	 {
+	   //獲取場景管理器
+	   var scm = g.sceneManager; 
+	   //創建場景
+	   var sc = scm.createScene([{"w":640,"h":400}]);
+	   initRenderObj(sc);
+	 }
+   //初始化創建精靈
+   function initRenderObj(sc)
+   {
+      //設置跑步動畫
+      var runFrames = new Frames("m_run",document.getElementById("mr"));
+	  var jumpFrames = new Frames("m_jump",document.getElementById("mr"));
+      var crouchFrames = new Frames("m_crouch",document.getElementById("mr"));
+	  //取前三幅跑步圖片
+	  for(var i=0;i<3;i++)
+	  {
+	    runFrames.add(32*i,0,32,32);
+	  }
+	  //增加跳躍幅
+	  jumpFrames.add(0,0,32,32);
+      jumpFrames.add(32*6,0,32,32);
+      //增加蹲下幅
+	  crouchFrames.add(0,0,32,32);
+      crouchFrames.add(32*14,0,32,32);
+	  //創建動畫集合
+	  var anims = new Animations();
+	  anims.add("run",runFrames,true);
+	  anims.add("jump",jumpFrames);
+	  anims.add("crouch",crouchFrames);
+	  //創建30個mario
+      for(var i=0;i<30;i++)
+	  {
+	   var mr = sc.createRObj(Mario.ClassName,["mr"]);
+	   //設置隨機位置
+	   mr.moveTo(MathUtil.randInt(20,620),MathUtil.randInt(20,380));
+	   //設置隨機速度0~3
+	   mr.dx = MathUtil.randInt(1,3);
+	   mr.setAnimSpeed(2*Math.random());
+	   mr.w = mr.h = 64;
+	   mr.setAnims(anims,"run");
+	  }	 
+   } 
+   //初始化遊戲
+   initGame();  
+   //開始飛奔
+   g.run(-1);
+</script>
+</html>
